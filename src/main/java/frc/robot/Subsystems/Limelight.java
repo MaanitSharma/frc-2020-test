@@ -56,15 +56,6 @@ public class Limelight extends Subsystem {
     this.table.getEntry("ledMode").setNumber(state);
   }
 
-  /*public void updateLimelightVariables()
-  {
-    v = table.getEntry("tv").getDouble(0.0); 
-    s = table.getEntry("ts").getDouble(0.0); 
-    x = table.getEntry("tx").getDouble(0.0); //horizontal degree off set from target
-    y = table.getEntry("ty").getDouble(0.0); //vertical degree off set from target
-    area = table.getEntry("ta").getDouble(0.0);
-  }*/
-
   public double getXDegreeOffset()
   {
     return table.getEntry("tx").getDouble(0.0); //horizontal degree off set from target
@@ -94,7 +85,7 @@ public class Limelight extends Subsystem {
     double KpDistance = -0.18;
     double KpAim = -0.1;
     double cVTA = ty;//getYDegreeOffset(); //camera to vision target cneter y angle from cMA
-    double currentDistance = (Constants.hOVT - Constants.hOL) / Math.tan(Math.toRadians(Constants.cMA + cVTA)); //d = (h2-h1) / tan(a1+a2)
+    double currentDistance = (Constants.hOVT - Constants.hOL) / Math.tan(Math.toRadians(Constants.cMA + cVTA)) - 10.0; //d = (h2-h1) / tan(a1+a2)
     SmartDashboard.putNumber("currentDistance", currentDistance);
     double distanceError = currentDistance - desiredDistance;
     SmartDashboard.putNumber("desiredDistance", desiredDistance);
@@ -185,7 +176,7 @@ public class Limelight extends Subsystem {
 
   public void autoLimelightDrive(double tx, double ty, double desiredDistance){
 
-    double kp_angling = -0.008;
+    double kp_angling = -0.009;
     //double minCommand = 0.01;
     double headingError = -tx;
     double steeringAdjust = 0.0;
@@ -195,12 +186,13 @@ public class Limelight extends Subsystem {
 
 
     double cVTA = ty;//getYDegreeOffset(); //camera to vision target cneter y angle from cMA
+    //VVVVVVVV this equation is fuking weird 
     double currentDistance = (Constants.hOVT - Constants.hOL) / Math.tan(Math.toRadians(Constants.cMA + cVTA)); //d = (h2-h1) / tan(a1+a2)
     SmartDashboard.putNumber("tanResult", Math.tan(Math.toRadians(Constants.cMA + cVTA)));
     SmartDashboard.putNumber("currentDistance", currentDistance);
     double distanceError = (desiredDistance - currentDistance)/12.0;
     SmartDashboard.putNumber("distanceError", distanceError);
-    Robot.kDrivetrain.drivePLimelight(0.23, distanceError, steeringAdjust);
+    Robot.kDrivetrain.drivePLimelight(-0.23, distanceError, steeringAdjust);
   }
 
   public void resetSpeedTune()

@@ -39,8 +39,8 @@ public class LimelightCommand extends Command {
     //Robot.limelight.updateLimeLightAutoDrive(Robot.limelight.getXDegreeOffset(), Robot.limelight.getYDegreeOffset(), 65);
     //Robot.kDrivetrain.driveSlave(Robot.limelight.getLeftSpeedTune() * 0.2 , Robot.limelight.getRightSpeedTune() * 0.2); //works in autoalign
     //Robot.kDrivetrain.driveSlave(Robot.limelight.getLeftSpeedTune() * 0.2, Robot.limelight.getRightSpeedTune() * 0.95);
-    //Robot.limelight.autoPIDDistancing(65.0, Robot.limelight.getYDegreeOffset());
-    Robot.limelight.autoLimelightDrive(Robot.limelight.getXDegreeOffset(), Robot.limelight.getYDegreeOffset(), 65);
+    //obot.limelight.autoPIDDistancing(65.0, Robot.limelight.getYDegreeOffset());
+    Robot.limelight.autoLimelightDrive(Robot.limelight.getXDegreeOffset(), Robot.limelight.getYDegreeOffset(), 100);
     //Robot.limelight.autoLimelightDrive(Robot.limelight.getXDegreeOffset(), Robot.limelight.getYDegreeOffset(), 65);
 
     finished = true;

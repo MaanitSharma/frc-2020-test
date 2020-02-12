@@ -31,6 +31,7 @@ import frc.robot.Subsystems.PneumaticDeploy;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import frc.robot.Subsystems.Dingus;
 
 
 /**
@@ -54,6 +55,7 @@ public class Robot extends TimedRobot {
    public static OI oi = new OI();
    public static final ColorSensor cSensor = new ColorSensor();
    public static final Limelight limelight = new Limelight();
+   public static final Dingus kDingus = new Dingus();
 
 
    Command autoCommand;

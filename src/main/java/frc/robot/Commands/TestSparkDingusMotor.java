@@ -6,52 +6,26 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.Commands;
+import frc.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
-import frc.robot.Subsystems.ColorSensor;
 
-public class ColorSensorCommand extends Command {
-
-
-  public ColorSensorCommand() {
+public class TestSparkDingusMotor extends Command {
+  public TestSparkDingusMotor() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.cSensor);
-    // eg. requires(chassis);
-
+    requires(Robot.kDingus);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(!Robot.cSensor.dDingusStatus) // function off
-    {
-      SmartDashboard.putBoolean("Dingus Functioning", false);
-      Robot.cSensor.statusReset(); //idk useless
-      Robot.kDingus.driveDingusMotor(0.0); //emergency stop, might be useless
-      if(Robot.oi.getPs4ColorSensorButton()) 
-      {
-        Robot.cSensor.dDingusStatus = true;
-      }
-    }
-    else if(Robot.cSensor.dDingusStatus) //function on
-    {
-      SmartDashboard.putBoolean("Dingus Functioning", true);
-      Robot.cSensor.noFMSColorSpin();
-      if(Robot.oi.getPs4ColorSensorButton()) 
-      {
-        Robot.cSensor.dDingusStatus = false; 
-      }
-    }
+    Robot.kDingus.driveDingusMotor(0.1);
   }
-    
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
@@ -62,13 +36,11 @@ public class ColorSensorCommand extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.kDingus.stopMotor();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    Robot.kDingus.stopMotor();
   }
 }

@@ -20,6 +20,9 @@ public class Constants
     //Intake Port
     public static int i_main = 5; //ctre cant retrieve...code is fine
 
+    //Dingus Port
+    public static  int d_main = 7; //change it :D
+
     //Controller Ports
     public static int ps4_port = 0;
 
@@ -45,9 +48,9 @@ public class Constants
     public static final double kTalon4096Unit2Deg = 1 / kDeg2Talon4096Unit;
 
     //limelight calculation
-    public static double cMA = 55; //camera mounting y angle from floor (facing this dir)
+    public static double cMA = 28; // was 120//camera mounting y angle from floor (facing this dir) //change to 30.
     public static double hOVT = 87.5; //vertical height of vision target center from floor, 6ft9.25in + 1ft5in //using table height currently
-    public static double hOL = 14; //vertical height of Limelight from floor (inches)
+    public static double hOL = 22.5; //vertical height of Limelight from floor (inches)
 
     public static double speedLimelight = 0.3;
 

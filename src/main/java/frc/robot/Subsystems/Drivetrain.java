@@ -61,12 +61,13 @@ public class Drivetrain extends Subsystem {
   //private static WPI_TalonFX testFalconMaster;
   //private static WPI_TalonFX testFalconSlave;
 
-  AHRS gyro = new AHRS(SPI.Port.kMXP);
+  /*AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(24));
   DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
 
   Pose2d pose;
+  
 
   public Rotation2d getHeading(){
     return Rotation2d.fromDegrees(-gyro.getAngle());
@@ -78,10 +79,14 @@ public class Drivetrain extends Subsystem {
       getRightEncoderVelocity() / 10.75 * 2 * Math.PI * Units.inchesToMeters(4.0) / 60);
   }
 
+  
+
   @Override
   public void periodic(){
     pose = odometry.update(getHeading(), getLeftEncoderPosition(), getRightEncoderPosition());
   }
+
+  */
 
   double setpoint = 0;
   final double iLimit = 1;
@@ -179,7 +184,7 @@ public class Drivetrain extends Subsystem {
     double sensorPosition = getEncodersDistance();
     double error = setpoint - sensorPosition;
     double outPutSpeed = kP * error;
-    driveSlave(outPutSpeed, outPutSpeed);
+    driveSlave(-outPutSpeed, -outPutSpeed);
     System.out.println("Speed: " + outPutSpeed);
     
     
@@ -191,7 +196,7 @@ public class Drivetrain extends Subsystem {
     double error = setpoint - sensorPosition;
     double outPutSpeed = kP * error;
     //outPutSpeed += steeringAdjust;
-    driveSlave(outPutSpeed - steeringAdjust , outPutSpeed + steeringAdjust);
+    driveSlave(-outPutSpeed - steeringAdjust , -outPutSpeed + steeringAdjust);
     
   }
 
