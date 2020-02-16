@@ -112,7 +112,7 @@ public class ColorSensor extends Subsystem {
     {
       if (motorRotation == 0) // default 0, can increase efficiency later on //need adjustment
       {
-        Robot.kDingus.driveDingusMotor(0.1); // spinning power
+        Robot.kDingus.driveDingusMotor(-0.295); // spinning power
       }
     } else {
       Robot.kDingus.driveDingusMotor(0.0);
@@ -134,7 +134,8 @@ public class ColorSensor extends Subsystem {
     if (currColor == incomingColor)
       return true;
     else {
-      System.out.println("Skipped Color!");
+      //useless becuz intersection is bugged
+      System.out.println("Skipped Color! [from " + prevColor + " to " + currColor + "], Expected: " + incomingColor);
       return false;
     }
   }

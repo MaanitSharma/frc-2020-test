@@ -14,14 +14,27 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+
+import java.util.Arrays;
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.Constants;
 import frc.robot.Commands.AutoCommand;
 import frc.robot.Commands.BoostedAutoCommand;
 import frc.robot.Commands.ShootCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.ColorSensor;
@@ -32,6 +45,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.Subsystems.Dingus;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
+
 
 
 /**
@@ -58,7 +74,35 @@ public class Robot extends TimedRobot {
    public static final Dingus kDingus = new Dingus();
 
 
-   Command autoCommand;
+   public Command getAutnomousCommand(){
+     TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(2));
+     config.setKinematics(Robot.kDrivetrain.getKinematics());
+     
+     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+       Arrays.asList(new Pose2d(), new Pose2d(1.0, 0, new Rotation2d()), new Pose2d(2.3, 1.2, new Rotation2d(90))),
+       config
+     );
+    return null;
+
+     /*RamseteCommand command = new RamseteCommand(
+       trajectory, 
+       kDrivetrain::getPose, 
+       new RamseteController(2.0, 0.7), 
+       kDrivetrain.getFeedForward(), 
+       kDrivetrain.getKinematics(), 
+       kDrivetrain.getSpeeds(), 
+       kDrivetrain.getLeftPIDController(), 
+       kDrivetrain.getRightPIDController(), 
+       kDrivetrain::tankDriveVolts,
+       kDrivetrain
+       ); 
+       return command.andThen(() -> kDrivetrain.tankDriveVolts(0,0));
+      */
+      
+ 
+   }
+
+   
 
   
    private Timer timer;
@@ -79,16 +123,20 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void autonomousInit() {
-    autoCommand = new AutoCommand();
+    /*autoCommand = new AutoCommand();
 
     if (autoCommand != null){
       autoCommand.start();
     }
+    */
+    getAutnomousCommand();
+    Robot.kDrivetrain.resetGyro();
+    
   }
 
   @Override
   public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Left Drive Encoder Value", Robot.kDrivetrain.getLeftEncoderPosition());
     SmartDashboard.putNumber("Right Drive Encoder Value", Robot.kDrivetrain.getRightEncoderPosition());
 
@@ -98,11 +146,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    if (autoCommand != null){
+    /*if (autoCommand != null){
       autoCommand.cancel();
     }
-
-    
+    Robot.kDrivetrain.resetGyro();
+    */
   }
 
   @Override
@@ -110,7 +158,9 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
     SmartDashboard.putNumber("Left Drive Encoder Value", Robot.kDrivetrain.getLeftEncoderPosition());
     SmartDashboard.putNumber("Right Drive Encoder Value", Robot.kDrivetrain.getRightEncoderPosition());
-
+    Robot.kDrivetrain.printGyro();
+    
+    
   
     //Timer.delay(0.01);
   }

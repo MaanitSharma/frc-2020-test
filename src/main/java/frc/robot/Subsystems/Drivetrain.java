@@ -8,6 +8,8 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Constants;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.Robot;
@@ -32,7 +35,10 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import frc.robot.Subsystems.Limelight;
+//import sun.java2d.pipe.SpanShapeRenderer.Simple;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
 
 /**
@@ -58,13 +64,21 @@ public class Drivetrain extends Subsystem {
   private static WPI_TalonSRX leftMaster;
   private static WPI_TalonSRX leftSlave;
 
+  private DifferentialDrive m_drive = new DifferentialDrive(leftMaster, rightMaster);
+
   //private static WPI_TalonFX testFalconMaster;
   //private static WPI_TalonFX testFalconSlave;
 
-  /*AHRS gyro = new AHRS(SPI.Port.kMXP);
+  //AHRS gyro = new AHRS(SPI.Port.kMXP);
+  ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 
   DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(24));
   DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
+  SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.54, 0.153, 0.0234);
+
+  PIDController leftPIDController = new PIDController(1.09, 0, 0);
+  PIDController righPIDController = new PIDController(1.09, 0, 0);
+   
 
   Pose2d pose;
   
@@ -76,17 +90,43 @@ public class Drivetrain extends Subsystem {
   public DifferentialDriveWheelSpeeds getSpeeds(){
     return new DifferentialDriveWheelSpeeds(
       getLeftEncoderVelocity() / 10.75 * 2 * Math.PI * Units.inchesToMeters(4.0) / 60,
-      getRightEncoderVelocity() / 10.75 * 2 * Math.PI * Units.inchesToMeters(4.0) / 60);
+      getRightEncoderVelocity() / 10.75 * 2 * Math.PI * Units.inchesToMeters(4.0) / 60
+      );
+  
   }
 
-  
+  public Pose2d getPose(){
+    return pose; 
+  }
 
+  public void tankDriveVolts(double leftVolts, double rightVolts){
+    leftMaster.set(leftVolts /12);
+    rightMaster.set(-rightVolts /12);
+  }
+
+  public SimpleMotorFeedforward getFeedForward(){
+    return feedforward;
+  }
+
+  public DifferentialDriveKinematics getKinematics(){
+    return kinematics;
+  }
+
+  public PIDController getLeftPIDController(){
+    return leftPIDController;
+  }
+
+  public PIDController getRightPIDController(){
+    return righPIDController;
+  }
+  
+  
   @Override
   public void periodic(){
     pose = odometry.update(getHeading(), getLeftEncoderPosition(), getRightEncoderPosition());
   }
 
-  */
+  
 
   double setpoint = 0;
   final double iLimit = 1;
@@ -161,6 +201,14 @@ public class Drivetrain extends Subsystem {
     errorSum = 0;
     lastError = 0;
     lastTimestamp = Timer.getFPGATimestamp();  
+  }
+
+  public void printGyro(){
+    SmartDashboard.putNumber("Gyro Angle: ", gyro.getAngle());
+  }
+
+  public void resetGyro() {
+    gyro.reset();
   }
 
 
@@ -254,8 +302,8 @@ public class Drivetrain extends Subsystem {
   }
 
   public void configEncodersForDrive(){
-    configMagEncoder(leftMaster, true);
-    configMagEncoder(rightMaster, true);
+    configMagEncoder(leftMaster, false);
+    configMagEncoder(rightMaster, false);
   }
 
   public double getEncodersDistance(){
